@@ -5,7 +5,7 @@
 ## Introduction
 
 Preview: 
-<blockquote class="imgur-embed-pub" lang="en" data-id="a/cxUzkmh" data-context="false" ><a href="https://imgur.com/a/cxUzkmh">SA-MP Disabled Commands (click if not showed)</a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
+<blockquote class="imgur-embed-pub" lang="en" data-id="a/cxUzkmh" data-context="false" ><a href="https://imgur.com/a/cxUzkmh">SA-MP Disabled Commands (click if not showed)</a></blockquote>
 
 This include helps you to disable some commands because of maybe you're still fixing some bugs
 and you want disable it without re-compile your code.
