@@ -1,0 +1,49 @@
+{
+	"user": "rsetiawan7",
+	"repo": "samp-disabled-commands",
+	"dependencies": [
+		"sampctl/samp-stdlib",
+		"Southclaws/zcmd",
+		"maddinat0r/sscanf",
+		"Zeex/samp-plugin-crashdetect",
+		"pawn-lang/YSI-Includes@5.x"
+	],
+	"builds": [
+		{
+			"name": "dev",
+			"args": [
+				"-;+",
+				"-(+",
+				"-d3",
+				"-Z+"
+			],
+			"constants": {
+				"MAX_PLAYERS": "10",
+				"_DEBUG": "4"
+			}
+		},
+		{
+			"name": "live",
+			"args": [
+				"-;+",
+				"-(+",
+				"-O2",
+				"-Z+"
+			],
+			"constants": {
+				"MAX_PLAYERS": "200",
+				"_DEBUG": "0"
+			}
+		}
+	],
+	"runtime": {
+		"version": "0.3.7",
+		"mode": "y_testing",
+		"echo": "Loading configuration...",
+		"rcon_password": "password",
+		"port": 8192,
+		"hostname": "SA-MP Server",
+		"maxplayers": 50,
+		"language": ""
+	}
+}
