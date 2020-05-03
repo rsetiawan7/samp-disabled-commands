@@ -23,7 +23,7 @@ new
   // Check is this feature disabled.
   bool:g_IsEnabled = false,
   // Check for looping.
-  g_CurrentIndex = -1,
+  g_CurrentIndex = 0,
   // For storing maximum disabled commands.
   g_DisabledCommands[MAX_DISABLED_COMMANDS][MAX_FUNC_NAME];
 
@@ -81,14 +81,13 @@ InitDisabledCommands()
   }
 
   // Close the file.
-  g_CurrentIndex = 1;
   INI_Close(iniFile);
 }
 
 ResetDisabledCommands()
 {
   // Reset all disabled commands.
-  for (new i = 0; i < MAX_DISABLED_COMMANDS; i++)
+  for (new i = 0; i < g_CurrentIndex; i++)
   {
     format(g_DisabledCommands[i], MAX_FUNC_NAME, "");
   }
@@ -98,6 +97,8 @@ _ReloadDisabledCommands()
 {
   // Disable the feature first.
   g_IsEnabled = false;
+  // Reset the loaded disabled commands.
+  g_CurrentIndex = 0;
 
   // Then, reset the disabled commands and reload from the file.
   ResetDisabledCommands();
@@ -110,13 +111,12 @@ public OnPlayerCommandReceived(playerid, cmdtext[])
   // Always check the feature.
   if (g_IsEnabled == true)
   {
-    for (new i = 0; i < MAX_DISABLED_COMMANDS; i++)
+    for (new i = 0; i < g_CurrentIndex; i++)
     {
       if (isnull(g_DisabledCommands[i]) == true)
       {
         #if defined _INC_y_core
         P:3("[DEBUG] COMMAND SKIPPED -> index: %d | cmdtext: %s | g_DisabledCommands[i]: %s", i, cmdtext, g_DisabledCommands[i]);
-        // P:3("[DEBUG] COMMAND SKIPPED -> strcmp(cmdtext, g_DisabledCommands[i], true, MAX_FUNC_NAME) == %d", strcmp(cmdtext, g_DisabledCommands[i], true, MAX_FUNC_NAME));
         #endif
         continue;
       }
@@ -130,7 +130,6 @@ public OnPlayerCommandReceived(playerid, cmdtext[])
       // Debugging with y_debug if _DEBUG defined and y_debug is included.
       #if defined _INC_y_core
       P:3("[DEBUG] index: %d | cmdtext: %s | g_DisabledCommands[i]: %s", i, cmdtext, g_DisabledCommands[i]);
-      // P:3("[DEBUG] strcmp(cmdtext, g_DisabledCommands[i], true, MAX_FUNC_NAME) == %d", strcmp(cmdtext, g_DisabledCommands[i], true, MAX_FUNC_NAME));
       #endif
 
       // Compare the command.
@@ -138,7 +137,6 @@ public OnPlayerCommandReceived(playerid, cmdtext[])
       {
         #if defined _INC_y_core
         P:3("[DEBUG] COMMAND MATCHED -> index: %d | cmdtext: %s | g_DisabledCommands[i]: %s | strcmp(...): %d", i, cmdtext, g_DisabledCommands[i], strcmp(cmdtext, g_DisabledCommands[i], true, MAX_FUNC_NAME));
-        // P:3("[DEBUG] strcmp(cmdtext, g_DisabledCommands[i], true, MAX_FUNC_NAME) == %d", strcmp(cmdtext, g_DisabledCommands[i], true, MAX_FUNC_NAME));
         #endif
 
         // Backtracing if needed.
@@ -218,6 +216,14 @@ stock AddDisabledCommands(const command[])
   P:3("[DEBUG] stock AddDisabledCommands CALLED -> command: %s", command);
   #endif
 
+  if (g_CurrentIndex == MAX_DISABLED_COMMANDS)
+  {
+    #if defined _INC_y_core
+    P:3("[DEBUG] stock AddDisabledCommands MAXIMUM REACHED -> command: %s | MAX_DISABLED_COMMANDS: "#MAX_DISABLED_COMMANDS" | Current loaded: %d", command, g_CurrentIndex + 1);
+    #endif
+    return 0;
+  }
+
   if (isnull(command) == true)
   {
     #if defined _INC_y_core
@@ -253,6 +259,14 @@ stock RemoveDisabledCommands(const command[])
   #if defined _INC_y_core
   P:3("[DEBUG] stock RemoveDisabledCommands CALLED -> command: %s", command);
   #endif
+
+  if (g_CurrentIndex == 0)
+  {
+    #if defined _INC_y_core
+    P:3("[DEBUG] stock RemoveDisabledCommands NOT ANY COMMANDS LOADED -> command: %s | MAX_DISABLED_COMMANDS: "#MAX_DISABLED_COMMANDS" | Current loaded: %d", command, g_CurrentIndex + 1);
+    #endif
+    return 0;
+  }
 
   if (isnull(command) == true)
   {
